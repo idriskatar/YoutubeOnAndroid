@@ -58,6 +58,10 @@ class BrowserWebViewClient(
     override fun onPageStarted(view: WebView, url: String?, favicon: Bitmap?) {
         super.onPageStarted(view, url, favicon)
         val stringUrl = url ?: return
+        val retryingUrl = view.getTag(R.id.webview_connection_retry_url_tag) as? String
+        if (retryingUrl != null && retryingUrl != stringUrl) {
+            view.setTag(R.id.webview_connection_retry_url_tag, null)
+        }
         val uri = Uri.parse(stringUrl)
         val scheme = uri.scheme?.lowercase()
 
@@ -73,6 +77,9 @@ class BrowserWebViewClient(
 
     override fun onPageFinished(view: WebView, url: String?) {
         super.onPageFinished(view, url)
+        if (view.getTag(R.id.webview_connection_retry_url_tag) == url) {
+            view.setTag(R.id.webview_connection_retry_url_tag, null)
+        }
         view.evaluateJavascript(SpeechRecognitionBridge.POLYFILL_JS, null)
         if (!WebViewFeature.isFeatureSupported(WebViewFeature.DOCUMENT_START_SCRIPT)) {
             if (BrowserPreferences.isDrmL3EnforcerEnabled(view.context)) {
@@ -87,6 +94,20 @@ class BrowserWebViewClient(
     override fun onReceivedError(view: WebView, request: WebResourceRequest, error: WebResourceError) {
         if (request.isForMainFrame) {
             val code = error.errorCode
+            if (code == ERROR_CONNECT) {
+                val failedUrl = request.url?.toString().orEmpty()
+                val retryingUrl = view.getTag(R.id.webview_connection_retry_url_tag) as? String
+                if (failedUrl.isNotBlank() && retryingUrl != failedUrl) {
+                    view.setTag(R.id.webview_connection_retry_url_tag, failedUrl)
+                    view.postDelayed({
+                        if (view.isAttachedToWindow && view.getTag(R.id.webview_connection_retry_url_tag) == failedUrl) {
+                            runCatching { view.loadUrl(failedUrl) }
+                        }
+                    }, CONNECTION_RETRY_DELAY_MS)
+                    return
+                }
+                view.setTag(R.id.webview_connection_retry_url_tag, null)
+            }
             val shouldShowErrorPage = when (code) {
                 ERROR_HOST_LOOKUP,
                 ERROR_CONNECT,
@@ -108,7 +129,9 @@ class BrowserWebViewClient(
                 return
             }
         }
-        callbacks.onError(error.errorCode, error.description?.toString())
+        if (request.isForMainFrame) {
+            callbacks.onError(error.errorCode, error.description?.toString())
+        }
     }
 
     override fun onReceivedHttpError(view: WebView, request: WebResourceRequest, errorResponse: WebResourceResponse) {
@@ -152,5 +175,9 @@ class BrowserWebViewClient(
         view.destroy()
         callbacks.onRenderProcessGone(detail.didCrash())
         return true
+    }
+
+    private companion object {
+        const val CONNECTION_RETRY_DELAY_MS = 900L
     }
 }

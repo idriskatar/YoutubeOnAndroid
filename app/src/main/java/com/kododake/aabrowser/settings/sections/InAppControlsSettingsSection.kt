@@ -94,6 +94,7 @@ object InAppControlsSettingsSection {
             QuickActionButtonPosition.BOTTOM_RIGHT -> context.getString(R.string.settings_quick_action_button_position_bottom_right)
             QuickActionButtonPosition.TOP_LEFT -> context.getString(R.string.settings_quick_action_button_position_top_left)
             QuickActionButtonPosition.TOP_RIGHT -> context.getString(R.string.settings_quick_action_button_position_top_right)
+            QuickActionButtonPosition.CENTER_LEFT -> context.getString(R.string.settings_quick_action_button_position_center_left)
         }
         val positionRow = builder.createSettingRow(
             title = context.getString(R.string.settings_quick_action_button_position),
@@ -104,13 +105,15 @@ object InAppControlsSettingsSection {
                 context.getString(R.string.settings_quick_action_button_position_bottom_left),
                 context.getString(R.string.settings_quick_action_button_position_bottom_right),
                 context.getString(R.string.settings_quick_action_button_position_top_left),
-                context.getString(R.string.settings_quick_action_button_position_top_right)
+                context.getString(R.string.settings_quick_action_button_position_top_right),
+                context.getString(R.string.settings_quick_action_button_position_center_left)
             )
             val selectedIndex = when (currentPosition) {
                 QuickActionButtonPosition.BOTTOM_LEFT -> 0
                 QuickActionButtonPosition.BOTTOM_RIGHT -> 1
                 QuickActionButtonPosition.TOP_LEFT -> 2
                 QuickActionButtonPosition.TOP_RIGHT -> 3
+                QuickActionButtonPosition.CENTER_LEFT -> 4
             }
             MaterialAlertDialogBuilder(context, com.google.android.material.R.style.ThemeOverlay_Material3_MaterialAlertDialog)
                 .setTitle("Select Button Position")
@@ -120,6 +123,7 @@ object InAppControlsSettingsSection {
                         1 -> QuickActionButtonPosition.BOTTOM_RIGHT
                         2 -> QuickActionButtonPosition.TOP_LEFT
                         3 -> QuickActionButtonPosition.TOP_RIGHT
+                        4 -> QuickActionButtonPosition.CENTER_LEFT
                         else -> QuickActionButtonPosition.BOTTOM_LEFT
                     }
                     if (newPos != currentPosition) {

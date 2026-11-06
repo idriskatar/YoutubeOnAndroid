@@ -115,6 +115,7 @@ fun InAppControlsComposable(
             QuickActionButtonPosition.BOTTOM_RIGHT -> stringResource(R.string.settings_quick_action_button_position_bottom_right)
             QuickActionButtonPosition.TOP_LEFT -> stringResource(R.string.settings_quick_action_button_position_top_left)
             QuickActionButtonPosition.TOP_RIGHT -> stringResource(R.string.settings_quick_action_button_position_top_right)
+            QuickActionButtonPosition.CENTER_LEFT -> stringResource(R.string.settings_quick_action_button_position_center_left)
         }
         ExpressiveListItem(
             headline = stringResource(R.string.settings_quick_action_button_position),
@@ -163,6 +164,7 @@ fun InAppControlsComposable(
                     QuickActionButtonPosition.BOTTOM_RIGHT -> stringResource(R.string.settings_quick_action_button_position_bottom_right)
                     QuickActionButtonPosition.TOP_LEFT -> stringResource(R.string.settings_quick_action_button_position_top_left)
                     QuickActionButtonPosition.TOP_RIGHT -> stringResource(R.string.settings_quick_action_button_position_top_right)
+                    QuickActionButtonPosition.CENTER_LEFT -> stringResource(R.string.settings_quick_action_button_position_center_left)
                 }
             }
         )

@@ -104,6 +104,7 @@ class BrowserUIManager(
             QuickActionButtonPosition.BOTTOM_RIGHT -> android.view.Gravity.BOTTOM or android.view.Gravity.END
             QuickActionButtonPosition.TOP_LEFT -> android.view.Gravity.TOP or android.view.Gravity.START
             QuickActionButtonPosition.TOP_RIGHT -> android.view.Gravity.TOP or android.view.Gravity.END
+            QuickActionButtonPosition.CENTER_LEFT -> android.view.Gravity.CENTER_VERTICAL or android.view.Gravity.START
         }
         val isTop = position == QuickActionButtonPosition.TOP_LEFT || position == QuickActionButtonPosition.TOP_RIGHT
         layoutParams.setMargins(margin, margin, margin, margin)

@@ -23,7 +23,8 @@ enum class QuickActionButtonPosition(
     BOTTOM_LEFT("bottom_left"),
     BOTTOM_RIGHT("bottom_right"),
     TOP_LEFT("top_left"),
-    TOP_RIGHT("top_right");
+    TOP_RIGHT("top_right"),
+    CENTER_LEFT("center_left");
 
     companion object {
         fun fromKey(key: String?): QuickActionButtonPosition {

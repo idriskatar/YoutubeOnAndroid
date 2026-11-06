@@ -105,6 +105,7 @@
     <string name="settings_quick_action_button_position_bottom_right">Bottom right</string>
     <string name="settings_quick_action_button_position_top_left">Top left</string>
     <string name="settings_quick_action_button_position_top_right">Top right</string>
+    <string name="settings_quick_action_button_position_center_left">Middle left</string>
     <string name="settings_start_page">Start page</string>
     <string name="settings_start_page_count">%1$d/%2$d quick links configured</string>
     <string name="settings_start_page_background_default">Background: default gradient</string>

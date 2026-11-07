@@ -46,7 +46,9 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.Image
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.runtime.Composable
@@ -151,11 +153,10 @@ fun StartPageScreen(
                         LauncherItem("youtube", "YouTube", "Videoları web üzerinden aç", "https://m.youtube.com"),
                         LauncherItem("google", "Google", "Google aramasını aç", "https://www.google.com"),
                         LauncherItem("kantan", "Kantan News", "Teknoloji haberlerini aç", "https://kantan.news/"),
-                        LauncherItem("obd", "MyOBD", "Canlı araç göstergeleri", "http://127.0.0.1:8765/"),
                         LauncherItem("browser", "Browser", "Adres yaz veya gezin", null)
                     )
                     if (isLandscape) {
-                        choices.take(4).chunked(2).forEachIndexed { rowIndex, rowItems ->
+                        choices.chunked(2).forEachIndexed { rowIndex, rowItems ->
                             if (rowIndex > 0) Spacer(Modifier.height(12.dp))
                             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                                 rowItems.forEach { item ->
@@ -165,8 +166,6 @@ fun StartPageScreen(
                                 }
                             }
                         }
-                        Spacer(Modifier.height(12.dp))
-                        LauncherChoice(choices.last(), Modifier.fillMaxWidth()) { showAppChooser = false }
                     } else {
                         choices.forEachIndexed { index, item ->
                             if (index > 0) Spacer(Modifier.height(12.dp))
@@ -258,7 +257,6 @@ private data class LauncherItem(val kind: String, val title: String, val descrip
 @Composable
 private fun LauncherLogo(kind: String) {
     val tile = when (kind) {
-        "obd" -> Color(0xFF0B1820)
         "kantan" -> Color(0xFFF6F2EB)
         else -> Color.White
     }
@@ -273,25 +271,12 @@ private fun LauncherLogo(kind: String) {
                     drawPath(p, Color.White)
                 }
             }
-            "google" -> Canvas(Modifier.size(38.dp)) {
-                val ring = androidx.compose.ui.geometry.Size(size.width * .82f, size.height * .82f)
-                val origin = androidx.compose.ui.geometry.Offset(size.width * .09f, size.height * .09f)
-                val line = Stroke(width = 4.dp.toPx(), cap = androidx.compose.ui.graphics.StrokeCap.Butt)
-                drawArc(Color(0xFF4285F4), -40f, 85f, false, origin, ring, style = line)
-                drawArc(Color(0xFF34A853), 45f, 85f, false, origin, ring, style = line)
-                drawArc(Color(0xFFFBBC05), 130f, 85f, false, origin, ring, style = line)
-                drawArc(Color(0xFFEA4335), 215f, 85f, false, origin, ring, style = line)
-                drawLine(Color(0xFF4285F4), androidx.compose.ui.geometry.Offset(size.width * .53f, size.height * .50f), androidx.compose.ui.geometry.Offset(size.width * .92f, size.height * .50f), 4.dp.toPx())
-            }
+            "google" -> Image(
+                painter = painterResource(com.kododake.aabrowser.R.drawable.google_g_logo),
+                contentDescription = "Google",
+                modifier = Modifier.size(38.dp)
+            )
             "kantan" -> Text("K", color = Color(0xFF172A39), fontWeight = FontWeight.Black, style = MaterialTheme.typography.headlineLarge)
-            "obd" -> Canvas(Modifier.size(42.dp)) {
-                drawArc(Color(0xFF45E3E8), 200f, 140f, false, style = Stroke(width = 2.dp.toPx()), topLeft = androidx.compose.ui.geometry.Offset(size.width * .08f, size.height * .02f), size = androidx.compose.ui.geometry.Size(size.width * .38f, size.height * .38f))
-                drawArc(Color(0xFF45E3E8), 200f, 140f, false, style = Stroke(width = 2.dp.toPx()), topLeft = androidx.compose.ui.geometry.Offset(size.width * .54f, size.height * .02f), size = androidx.compose.ui.geometry.Size(size.width * .38f, size.height * .38f))
-                val car = Path().apply { moveTo(size.width * .15f, size.height * .70f); lineTo(size.width * .23f, size.height * .48f); quadraticTo(size.width * .27f, size.height * .42f, size.width * .36f, size.height * .42f); lineTo(size.width * .68f, size.height * .42f); quadraticTo(size.width * .78f, size.height * .42f, size.width * .82f, size.height * .50f); lineTo(size.width * .88f, size.height * .70f); lineTo(size.width * .15f, size.height * .70f); close() }
-                drawPath(car, Color(0xFF45E3E8), style = Stroke(width = 2.2.dp.toPx()))
-                drawCircle(Color(0xFFFFAD55), 2.5.dp.toPx(), androidx.compose.ui.geometry.Offset(size.width * .30f, size.height * .73f))
-                drawCircle(Color(0xFFFFAD55), 2.5.dp.toPx(), androidx.compose.ui.geometry.Offset(size.width * .72f, size.height * .73f))
-            }
             else -> {
                 // A compact browser mark inspired by AABrowser's window and navigation controls.
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {

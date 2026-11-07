@@ -35,9 +35,9 @@ object BookmarkPreferences {
     val DEFAULT_BOOKMARK_ENTRIES = listOf(
         BookmarkEntry("https://www.google.com", "Google"),
         BookmarkEntry("https://youtube.com", "YouTube"),
-        BookmarkEntry("https://kantan.news/", "Kantan.News"),
-        BookmarkEntry("https://www.instagram.com/", "Instagram"),
-        /* BookmarkEntry(GAME_BOOKMARK_URL, "Kododake Games") */
+        BookmarkEntry("https://duckduckgo.com", "DuckDuckGo"),
+        BookmarkEntry("https://keepandroidopen.org", "Keep Android Open"),
+        BookmarkEntry(GAME_BOOKMARK_URL, "Kododake Games")
     )
 
     val DEFAULT_BOOKMARKS: List<String> = DEFAULT_BOOKMARK_ENTRIES.map { it.url }

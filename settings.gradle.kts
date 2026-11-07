@@ -24,5 +24,5 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "YoutubeOnAuto"
-include(":app", ":myobd")
+include(":app")
  

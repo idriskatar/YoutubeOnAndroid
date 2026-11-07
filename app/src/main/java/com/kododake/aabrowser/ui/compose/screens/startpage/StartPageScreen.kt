@@ -129,6 +129,10 @@ fun StartPageScreen(
                         callbacks.onNavigate("https://www.google.com")
                     }
                     Spacer(Modifier.height(14.dp))
+                    LauncherChoice("K", "Kantan News", "Teknoloji haberlerini aç", MaterialTheme.colorScheme.surfaceContainerHigh) {
+                        callbacks.onNavigate("https://kantan.news/")
+                    }
+                    Spacer(Modifier.height(14.dp))
                     LauncherChoice("▥", "MyOBD", "Yerel OBD gösterge panelini aç", MaterialTheme.colorScheme.surfaceContainerHigh) {
                         callbacks.onNavigate("http://127.0.0.1:8765/")
                     }

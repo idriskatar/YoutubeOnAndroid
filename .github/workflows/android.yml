@@ -11,7 +11,7 @@ permissions:
 
 jobs:
   build:
-    name: Build debug APK
+    name: Build debug APKs
     runs-on: ubuntu-latest
 
     steps:
@@ -35,14 +35,15 @@ jobs:
         run: chmod +x gradlew
 
       - name: Build debug APK
-        run: ./gradlew --no-daemon assembleDebug
+        run: ./gradlew --no-daemon :app:assembleDebug :myobd:assembleDebug
 
       - name: Upload APK artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: YoutubeOnAuto-debug-apk
+          name: YoutubeOnAuto-and-MyOBD-debug-apks
           path: |
             app/build/outputs/apk/debug/*.apk
             app/build/renamedApks/debug/*.apk
+            myobd/build/outputs/apk/debug/*.apk
           if-no-files-found: error
           retention-days: 14

@@ -40,6 +40,7 @@ object CleartextNavigationHandler {
         }
 
         val host = uri.host?.lowercase()
+        if (host == "127.0.0.1" || host == "localhost") return false
         if (BrowserPreferences.isHostAllowedCleartext(view.context, host)) {
             return false
         }

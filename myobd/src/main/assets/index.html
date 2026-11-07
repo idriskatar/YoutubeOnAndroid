@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+  <meta name="color-scheme" content="dark">
+  <title>MyOBD · Analog</title>
+  <style>
+    :root{color-scheme:dark;--bg:#080e14;--panel:#111c25;--panel2:#142530;--text:#e8fbff;--muted:#829ba8;--accent:#48f0ce;--line:#22414d;--glow:rgba(72,240,206,.25)}
+    *{box-sizing:border-box}html,body{margin:0;min-height:100%;background:var(--bg);color:var(--text);font-family:Inter,Roboto,"Segoe UI",system-ui,sans-serif}
+    body{background:radial-gradient(ellipse at 50% -30%,#12323c 0,transparent 58%),linear-gradient(145deg,#080e14,#0b141c 55%,#091118);min-height:100dvh}
+    main{width:min(100%,1100px);margin:auto;padding:10px 14px 8px}
+    header{height:38px;display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:7px}
+    .brand{display:flex;align-items:center;gap:9px}.brand-mark{width:27px;height:27px;border:1px solid var(--accent);border-radius:50%;display:grid;place-items:center;color:var(--accent);font-size:14px;box-shadow:0 0 16px var(--glow)}
+    h1{font-size:21px;line-height:1;margin:0;letter-spacing:.08em;font-weight:750}.eyebrow{font-size:9px;color:var(--muted);letter-spacing:.2em;text-transform:uppercase;margin-top:4px}
+    .state{display:flex;align-items:center;gap:7px;padding:6px 10px;border:1px solid var(--line);border-radius:999px;background:#0d1920;color:var(--muted);font-size:11px;white-space:nowrap}
+    .dot{width:7px;height:7px;border-radius:50%;background:#e6a24b;box-shadow:0 0 9px currentColor}.connected .dot{background:var(--accent)}
+    .hero{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:7px 11px;border:1px solid var(--line);border-radius:12px;background:linear-gradient(100deg,rgba(20,37,48,.96),rgba(11,22,30,.96));margin-bottom:8px;min-height:34px}
+    .hero strong{font-size:12px;color:var(--text);font-weight:650}.hero span{font-size:10px;color:var(--muted);text-align:right;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    .grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+    .metric{position:relative;min-width:0;min-height:142px;overflow:hidden;border:1px solid var(--line);border-radius:15px;padding:8px 9px 7px;background:linear-gradient(150deg,rgba(20,37,48,.98),rgba(10,19,27,.98));box-shadow:inset 0 1px 0 rgba(255,255,255,.035),0 5px 18px rgba(0,0,0,.16);display:flex;flex-direction:column;align-items:center;justify-content:space-between}
+    .metric:before{content:"";position:absolute;inset:0 25% auto;height:1px;background:linear-gradient(90deg,transparent,var(--accent),transparent);opacity:.36}
+    .metric[hidden]{display:none}.label{width:100%;display:flex;justify-content:space-between;align-items:center;color:#9eb8c2;font-size:clamp(9px,1.25vw,12px);letter-spacing:.075em;text-transform:uppercase;white-space:nowrap}
+    .label b{font-weight:500;color:var(--accent);font-size:9px;opacity:.8}
+    .dial{width:min(100%,190px);height:auto;max-height:77px;overflow:visible;flex:1;min-height:72px}
+    .track{fill:none;stroke:#29424d;stroke-width:7;stroke-linecap:round}
+    .progress{fill:none;stroke:var(--accent);stroke-width:7;stroke-linecap:round;filter:drop-shadow(0 0 4px var(--glow));transition:stroke-dasharray .35s ease}
+    .tick{stroke:#70909b;stroke-width:1.2;opacity:.72}.tick.major{stroke:var(--accent);stroke-width:1.7;opacity:.9}
+    .needle{stroke:#f4fbff;stroke-width:2.5;stroke-linecap:round;filter:drop-shadow(0 0 3px var(--accent));transform-box:view-box;transform-origin:50% 83.6%;transition:transform .45s cubic-bezier(.2,.8,.2,1)}
+    .hub{fill:var(--accent);stroke:#e9ffff;stroke-width:1.5;filter:drop-shadow(0 0 5px var(--glow))}
+    .scale{fill:#7f98a2;font-size:8px;font-family:inherit}.reading{display:flex;align-items:baseline;gap:4px;margin-top:-2px;line-height:1}
+    .value{font-size:clamp(17px,2.8vw,26px);font-weight:720;letter-spacing:-.035em;font-variant-numeric:tabular-nums;text-shadow:0 0 12px var(--glow)}.unit{font-size:9px;color:var(--muted);letter-spacing:.04em}
+    details{margin-top:7px;border:1px solid var(--line);border-radius:11px;background:rgba(13,25,32,.88);padding:0 11px}
+    summary{cursor:pointer;list-style:none;padding:9px 0;font-weight:600;font-size:11px;color:#b8cbd1}summary::-webkit-details-marker{display:none}summary:after{content:'＋';float:right;color:var(--accent)}details[open] summary:after{content:'−'}
+    .controls{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:6px;padding:0 0 9px}.control{display:flex;align-items:center;gap:7px;padding:6px 8px;border:1px solid #203841;border-radius:9px;background:#101c24;color:#c4d7dc;font-size:10px}
+    input[type=checkbox]{accent-color:var(--accent);width:14px;height:14px}input[type=color]{margin-left:auto;width:27px;height:21px;padding:1px;border:1px solid var(--line);background:#0b141c;border-radius:5px}
+    footer{margin-top:5px;color:#58717b;font-size:9px;text-align:center}.error{color:#ff9185!important}
+    @media(max-width:520px){main{padding:8px}.grid{gap:6px}.metric{min-height:126px;padding:7px 5px 6px;border-radius:12px}.dial{min-height:64px;max-height:68px}.label{letter-spacing:.035em}.label b{font-size:8px}.value{font-size:17px}.unit{font-size:8px}.hero{padding:6px 8px}}
+    @media(max-height:460px) and (orientation:landscape){main{padding:5px 10px}.grid{gap:5px}.metric{min-height:119px;padding-top:5px;padding-bottom:5px}.dial{max-height:62px;min-height:58px}header{height:31px;margin-bottom:4px}.hero{min-height:28px;margin-bottom:5px}details{margin-top:5px}summary{padding:6px 0}footer{margin-top:3px}}
+  </style>
+</head>
+<body>
+<main>
+  <header>
+    <div class="brand"><div class="brand-mark">◉</div><div><h1>MYOBD</h1><div class="eyebrow">FUTURISTIC VEHICLE TELEMETRY</div></div></div>
+    <div class="state" id="connection"><i class="dot"></i><span id="connectionText">BAĞLANIYOR</span></div>
+  </header>
+  <section class="hero"><strong id="status">OBD bağlantısı bekleniyor</strong><span id="device">ELM327</span></section>
+  <section class="grid" id="grid">
+    <article class="metric" data-key="speedKph" data-min="0" data-max="240" data-left="0" data-right="240">
+      <div class="label"><span>Hız</span><b>01·0D</b></div><svg class="dial" viewBox="0 0 192 122" aria-hidden="true"><path class="track" d="M26 102 A70 70 0 0 1 166 102"/><path class="progress" pathLength="100" d="M26 102 A70 70 0 0 1 166 102"/><g class="ticks"></g><line class="needle" x1="96" y1="102" x2="96" y2="42"/><circle class="hub" cx="96" cy="102" r="5"/><text class="scale" x="22" y="117">0</text><text class="scale" x="163" y="117">240</text></svg><div class="reading"><span class="value" data-value>—</span><span class="unit">km/h</span></div>
+    </article>
+    <article class="metric" data-key="rpm" data-min="0" data-max="8000" data-left="0" data-right="8k">
+      <div class="label"><span>Motor devri</span><b>01·0C</b></div><svg class="dial" viewBox="0 0 192 122" aria-hidden="true"><path class="track" d="M26 102 A70 70 0 0 1 166 102"/><path class="progress" pathLength="100" d="M26 102 A70 70 0 0 1 166 102"/><g class="ticks"></g><line class="needle" x1="96" y1="102" x2="96" y2="42"/><circle class="hub" cx="96" cy="102" r="5"/><text class="scale" x="22" y="117">0</text><text class="scale" x="163" y="117">8k</text></svg><div class="reading"><span class="value" data-value>—</span><span class="unit">rpm</span></div>
+    </article>
+    <article class="metric" data-key="coolantC" data-min="-40" data-max="160" data-left="-40" data-right="160">
+      <div class="label"><span>Soğutma suyu</span><b>01·05</b></div><svg class="dial" viewBox="0 0 192 122" aria-hidden="true"><path class="track" d="M26 102 A70 70 0 0 1 166 102"/><path class="progress" pathLength="100" d="M26 102 A70 70 0 0 1 166 102"/><g class="ticks"></g><line class="needle" x1="96" y1="102" x2="96" y2="42"/><circle class="hub" cx="96" cy="102" r="5"/><text class="scale" x="18" y="117">-40</text><text class="scale" x="163" y="117">160</text></svg><div class="reading"><span class="value" data-value>—</span><span class="unit">°C</span></div>
+    </article>
+    <article class="metric" data-key="engineLoadPct" data-min="0" data-max="100" data-left="0" data-right="100">
+      <div class="label"><span>Motor yükü</span><b>01·04</b></div><svg class="dial" viewBox="0 0 192 122" aria-hidden="true"><path class="track" d="M26 102 A70 70 0 0 1 166 102"/><path class="progress" pathLength="100" d="M26 102 A70 70 0 0 1 166 102"/><g class="ticks"></g><line class="needle" x1="96" y1="102" x2="96" y2="42"/><circle class="hub" cx="96" cy="102" r="5"/><text class="scale" x="22" y="117">0</text><text class="scale" x="163" y="117">100</text></svg><div class="reading"><span class="value" data-value>—</span><span class="unit">%</span></div>
+    </article>
+    <article class="metric" data-key="fuelPct" data-min="0" data-max="100" data-left="0" data-right="100">
+      <div class="label"><span>Yakıt seviyesi</span><b>01·2F</b></div><svg class="dial" viewBox="0 0 192 122" aria-hidden="true"><path class="track" d="M26 102 A70 70 0 0 1 166 102"/><path class="progress" pathLength="100" d="M26 102 A70 70 0 0 1 166 102"/><g class="ticks"></g><line class="needle" x1="96" y1="102" x2="96" y2="42"/><circle class="hub" cx="96" cy="102" r="5"/><text class="scale" x="22" y="117">0</text><text class="scale" x="163" y="117">100</text></svg><div class="reading"><span class="value" data-value>—</span><span class="unit">%</span></div>
+    </article>
+    <article class="metric" data-key="voltage" data-min="8" data-max="16" data-left="8" data-right="16">
+      <div class="label"><span>Akü voltajı</span><b>ELM·V</b></div><svg class="dial" viewBox="0 0 192 122" aria-hidden="true"><path class="track" d="M26 102 A70 70 0 0 1 166 102"/><path class="progress" pathLength="100" d="M26 102 A70 70 0 0 1 166 102"/><g class="ticks"></g><line class="needle" x1="96" y1="102" x2="96" y2="42"/><circle class="hub" cx="96" cy="102" r="5"/><text class="scale" x="22" y="117">8</text><text class="scale" x="163" y="117">16</text></svg><div class="reading"><span class="value" data-value>—</span><span class="unit">V</span></div>
+    </article>
+  </section>
+  <details>
+    <summary>EKRANI ÖZELLEŞTİR</summary>
+    <div class="controls">
+      <label class="control"><input type="checkbox" data-show="speedKph" checked> Hız göstergesi</label>
+      <label class="control"><input type="checkbox" data-show="rpm" checked> Motor devri</label>
+      <label class="control"><input type="checkbox" data-show="coolantC" checked> Soğutma suyu</label>
+      <label class="control"><input type="checkbox" data-show="engineLoadPct" checked> Motor yükü</label>
+      <label class="control"><input type="checkbox" data-show="fuelPct" checked> Yakıt seviyesi</label>
+      <label class="control"><input type="checkbox" data-show="voltage" checked> Akü voltajı</label>
+      <label class="control">Vurgu rengi<input id="accent" type="color" value="#48f0ce"></label>
+    </div>
+  </details>
+  <footer id="updated">YAKIT VERİSİ ARAÇ TARAFINDAN DESTEKLENMİYOR OLABİLİR · OBD-II OKUMA MODU</footer>
+</main>
+<script>
+  const defaults={hidden:[],accent:'#48f0ce'};
+  let config={...defaults};
+  try{config={...defaults,...JSON.parse(localStorage.getItem('myobd-screen')||'{}')}}catch{}
+  const cards=[...document.querySelectorAll('.metric')];
+  const toggles=[...document.querySelectorAll('[data-show]')];
+  const accent=document.getElementById('accent');
+  const values={speedKph:{max:240,decimals:0},rpm:{max:8000,decimals:0},coolantC:{min:-40,max:160,decimals:0},engineLoadPct:{max:100,decimals:0},fuelPct:{max:100,decimals:0},voltage:{min:8,max:16,decimals:1}};
+  function applyConfig(){
+    document.documentElement.style.setProperty('--accent',config.accent||defaults.accent);
+    accent.value=config.accent||defaults.accent;
+    toggles.forEach(input=>input.checked=!(config.hidden||[]).includes(input.dataset.show));
+    cards.forEach(card=>card.hidden=(config.hidden||[]).includes(card.dataset.key));
+  }
+  function saveConfig(){localStorage.setItem('myobd-screen',JSON.stringify(config));applyConfig()}
+  toggles.forEach(input=>input.addEventListener('change',()=>{config.hidden=toggles.filter(item=>!item.checked).map(item=>item.dataset.show);saveConfig()}));
+  accent.addEventListener('input',()=>{config.accent=accent.value;saveConfig()});
+  cards.forEach(card=>{
+    const ticks=card.querySelector('.ticks');
+    for(let i=0;i<=10;i++){
+      const angle=(180+i*18)*Math.PI/180;
+      const r1=69,r2=i%2===0?58:62,cx=96,cy=102;
+      const line=document.createElementNS('http://www.w3.org/2000/svg','line');
+      line.setAttribute('x1',String(cx+r1*Math.cos(angle)));line.setAttribute('y1',String(cy+r1*Math.sin(angle)));
+      line.setAttribute('x2',String(cx+r2*Math.cos(angle)));line.setAttribute('y2',String(cy+r2*Math.sin(angle)));
+      line.setAttribute('class',i%2===0?'tick major':'tick');ticks.appendChild(line);
+    }
+  });
+  function shown(value,digits=0){return value===null||value===undefined?'—':Number(value).toLocaleString('tr-TR',{maximumFractionDigits:digits})}
+  function updateCard(card,data){
+    const key=card.dataset.key,meta=values[key],value=data[key],number=Number(value);
+    card.querySelector('[data-value]').textContent=shown(value,meta.decimals);
+    const min=meta.min??0,percent=Number.isFinite(number)?Math.max(0,Math.min(100,(number-min)/(meta.max-min)*100)):0;
+    card.querySelector('.progress').style.strokeDasharray=`${percent} 100`;
+    card.querySelector('.needle').style.transform=`rotate(${percent*1.8-90}deg)`;
+  }
+  async function refresh(){
+    try{
+      const response=await fetch('/api/state',{cache:'no-store'});if(!response.ok)throw new Error('Servis yanıt vermedi');
+      const data=await response.json();
+      document.getElementById('status').className='';
+      document.getElementById('connection').classList.toggle('connected',!!data.connected);
+      document.getElementById('connectionText').textContent=data.connected?'OBD BAĞLI':'BAĞLANTI BEKLENİYOR';
+      document.getElementById('status').textContent=data.status||'Durum bilinmiyor';
+      document.getElementById('device').textContent=data.device||'ELM327';
+      cards.forEach(card=>updateCard(card,data));
+      document.getElementById('updated').textContent=data.updatedAt?`SON VERİ ${new Date(data.updatedAt).toLocaleTimeString('tr-TR')} · YAKIT PID 01·2F ARAÇTA DESTEKLENMEYEBİLİR`:'OBD-II CANLI VERİ';
+    }catch(error){document.getElementById('status').textContent='MyOBD yerel servisine ulaşılamıyor';document.getElementById('status').className='error'}
+  }
+  applyConfig();refresh();setInterval(refresh,1000);
+</script>
+</body>
+</html>
